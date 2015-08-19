@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /libraries/
+Disallow: /sql/
+Disallow: /classes/
+Disallow: /includes/
+Disallow: /forms/
+Disallow: /ajax/
+Disallow: /controllers/
+Disallow: /models/
