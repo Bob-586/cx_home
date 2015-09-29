@@ -28,7 +28,7 @@ class users extends the_model {
       $this->set_primary_key('username');
       $this->load($username);
       
-      if ($this->get_member($this->key) > 0 && $this->get_member('password') == $this->get_pwd_hash($password)) {
+      if ($this->get_member($this->key) > 0 && $this->check_pwd($password, $this->get_member('password'))) {
         $this->login_success($this->get_members());
         return true;
       }
@@ -51,7 +51,20 @@ class users extends the_model {
   }
 
   public function get_pwd_hash($pwd) {
-    return hash('SHA256', CX_PWD_SALT1 . $pwd . CX_PWD_SALT2, false);
+    if (function_exists('password_hash')) {
+      return password_hash($pwd, PASSWORD_DEFAULT); // will add random SALT by it self
+    } else {
+      return hash('SHA256', CX_PWD_SALT1 . $pwd . CX_PWD_SALT2, false);
+    }
+  }
+  
+  public function check_pwd($pwd, $hash) {
+    if (function_exists('password_hash')) {
+      return password_verify($pwd, $hash);
+    } else {
+      $check = hash('SHA256', CX_PWD_SALT1 . $pwd . CX_PWD_SALT2, false);
+      return ($check == $hash) ? true : false;
+    }
   }
 
   private function get_cookie() {
