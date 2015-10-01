@@ -149,6 +149,62 @@ public function all() {
     echo \cx\app\main_functions::get_large_random_hash();
   }
   
+  public function test_curl() {
+    $curl = $this->load_class('cx\app\cx_curl');
+    $curl->hostname = 'dev';
+    $curl->port = 80;
+    $curl->ssl = false;
+    cx_dump($curl->post('home/api/app/testing/ajax_name', array('name'=>'bob')));
+  }
+  
+  public function ajax() {
+    $this->do_view('
+      <form id="all">
+      Name: <input type="text" name="fname" id="fname">
+      </form>
+      <button type="button" id="go">Submit</button>
+      
+<script type="text/javascript">
+$("#go").click(function() { 
+    var name = $("#fname").val();         
+    $.ajax({
+        url: "' . $this->get_api_url('app/testing', 'ajax_name') . '",
+        type: "POST",
+        data: { name: name}, // $("#all").serialize()
+        success: function (result) {
+          alert(result.name);
+        },
+        error: function (opps) {
+          alert("Opps:" + opps.reason);
+        }
+    });  
+
+    });
+
+</script>
+      ');
+  }
+  
+  public function ajax_name() {
+    $this->set_header_type('json');
+
+    if (! $this->is_api()) {
+      \cx\app\cx_json::error(array('code'=>203, 'message'=>'Error no api call'));
+    }
+
+    
+    if (! $this->request->is_ajax()) {
+//      \cx\app\cx_json::error(array('code'=>203, 'message'=>'Error no ajax'));
+    }
+    
+    $name = $this->request->post_var('name');
+    if ($name === false) {
+      \cx\app\cx_json::error(array('code'=>204, 'message'=>'Name not set'));
+    }
+    
+    \cx\app\cx_json::ok(array('code'=>200, 'name'=>$name));
+  }
+  
   public function get_pwd() {
     $this->load_model('users' . DS . 'users');
     $db_options = array();

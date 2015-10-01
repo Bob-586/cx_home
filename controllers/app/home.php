@@ -6,6 +6,11 @@ class cx_loader_app_home extends cx\app\app {
     parent::__construct();
   }
   
+  public function deny() {
+    // Add logging here
+    $this->error404();
+  }
+  
   public function index() {
     $this->breadcrumb = array("javascript:;"=>"Main");
     $this->active_crumb = "Index";
