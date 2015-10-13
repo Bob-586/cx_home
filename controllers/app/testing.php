@@ -74,12 +74,14 @@ class cx_loader_app_testing extends cx\app\app {
     $this->do_view($frm->get_html());
   }
   
-public function all() {
+public function top() {
     $this->load_model('app' . DS . 'testing');
     $db_options = array();
     $test = new cx\model\testing($db_options);
     
-    $test->load();
+    $options['limit'] = 50;
+    
+    $test->load("", $options);
     $allow_html = true;
     $rows = $test->get_members($allow_html);
     
