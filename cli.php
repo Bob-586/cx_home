@@ -1,3 +1,5 @@
+#!/usr/bin/php
+
 <?php
 
 /**
@@ -5,15 +7,16 @@
  * @author Chris Allen, Robert Strutts 
  */
 
+if (!empty($_SERVER['REQUEST_URI'])) {
+  echo "Direct access denied!";
+  exit;
+}
+
 $mem_baseline = memory_get_usage();
 
-require 'config.php'; 
+require 'config.php';
 require '../cx/startup.php';
 
-if (!empty($_SERVER['REQUEST_URI'])) {
-  $app->load_controller();
-} else {
-  $app->load_cli_controller();
-}
+$app->load_cli_controller();
 
 cx_get_memory_stats(); // If debug on, shows memory stats
