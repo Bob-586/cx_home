@@ -1,17 +1,17 @@
 <IfModule mod_rewrite.c>
-    Options +FollowSymLinks
+    Options +FollowSymLinks -Indexes
     RewriteEngine On
 # DENY ACCESS TO CORE DIRs
     RewriteRule "^(models|views|controllers|includes|forms|templates|sql)/(.*)$" "index.php?route=/app/home&m=deny" [NC,L]
+# TRACE and TRACK HTTP methods disabled to prevent XSS attacks
+    RewriteCond "%{REQUEST_METHOD}" "^TRAC[EK]"
+    RewriteRule ".*" "-" [L,R=405]
 # API
 # never rewrite for existing files, directories and links
     RewriteCond "%{REQUEST_FILENAME}" "!-f"
     RewriteCond "%{REQUEST_FILENAME}" "!-d"
     RewriteCond "%{REQUEST_FILENAME}" "!-l"
     RewriteRule "^(api|api2)/([^/]*)/([^/]*)/([^/]*)(.*)$" "index.php?route=/$2/$3&m=$4&api=true" [QSA,L]
-# TRACE and TRACK HTTP methods disabled to prevent XSS attacks
-    RewriteCond "%{REQUEST_METHOD}" "^TRAC[EK]"
-    RewriteRule ".*" "-" [L,R=405]
 # Mobile
     RewriteCond "%{HTTP_USER_AGENT}" "android|blackberry|ipad|iphone|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile" [NC]
     RewriteCond "%{REQUEST_FILENAME}" "!-f"
@@ -28,7 +28,7 @@
     RewriteCond "%{REQUEST_FILENAME}" "!-d"
     RewriteCond "%{REQUEST_FILENAME}" "!-l"
     RewriteRule "^(assets|skin|js|css)/(.*)$" "-" [R=404,L,NS]
-# rewrite everything else to index.php
+# rewrite everything not found to index.php
     RewriteCond "%{REQUEST_FILENAME}" "!-f"
     RewriteCond "%{REQUEST_FILENAME}" "!-d"
     RewriteCond "%{REQUEST_FILENAME}" "!-l"

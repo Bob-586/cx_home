@@ -33,8 +33,8 @@ class cx_loader_app_testing extends cx\app\app {
   }
   
   public function index() {
-    $id = $this->request->get_var('id');
-    if ($id === false) {
+    $id = cx\app\static_request::init('get', 'id');
+    if ($id->is_not_set()) {
       echo "Invalid id!";
       exit;
     }
@@ -43,15 +43,15 @@ class cx_loader_app_testing extends cx\app\app {
     $db_options = array();
     $test = new cx\model\testing($db_options);
     
-    if ($id < 1) {
+    if ($id->is_not_valid_id()) {
       // no existing data
       $model = array(); 
     } else {
-      $test->load($id);
+      $test->load($id->to_int());
       $model = $test->get_members();      
     }      
 
-    if ($this->request->request_var('save') !== false) {
+    if (cx\app\static_request::init('request', 'save')->is_set()) {
       $test->auto_set_members();
       $success = $test->save();
  
@@ -154,55 +154,42 @@ public function all() {
     $curl->hostname = 'dev';
     $curl->port = 80;
     $curl->ssl = false;
-    cx_dump($curl->post('home/api/app/testing/ajax_name', array('name'=>'bob')));
+    $curl->json_decode = true;
+    cx_dump($curl->post('home/api/app/testing/ajax_name', array('name'=>'bob', 'return'=>'json', 'debug'=>'true')));
   }
   
   public function ajax() {
-    $this->do_view('
-      <form id="all">
-      Name: <input type="text" name="fname" id="fname">
-      </form>
-      <button type="button" id="go">Submit</button>
-      
-<script type="text/javascript">
-$("#go").click(function() { 
-    var name = $("#fname").val();         
-    $.ajax({
-        url: "' . $this->get_api_url('app/testing', 'ajax_name') . '",
-        type: "POST",
-        data: { name: name}, // $("#all").serialize()
-        success: function (result) {
-          alert(result.name);
-        },
-        error: function (opps) {
-          alert("Opps:" + opps.reason);
-        }
-    });  
-
-    });
-
-</script>
-      ');
+    $this->load_view('app/testing/ajax_name');
   }
   
-  public function ajax_name() {
-    $this->set_header_type('json');
-
-    if (! $this->is_api()) {
-      \cx\app\cx_json::error(array('code'=>203, 'message'=>'Error no api call'));
+  private function ajax_name_api(array $data) {
+    if ($this->request->is_not_set($data['name'])) {
+      \cx\app\cx_api::error(array('code'=>422, 'reason'=>'Name not set'));
     }
 
+    if ($this->request->is_empty($data['name'])) {
+      \cx\app\cx_api::error(array('code'=>422, 'reason'=>'Name is a required field'));
+    }    
     
-    if (! $this->request->is_ajax()) {
-//      \cx\app\cx_json::error(array('code'=>203, 'message'=>'Error no ajax'));
+    \cx\app\cx_api::ok(array('code'=>200, 'name'=>$data['name']));
+  }
+  
+  public function ajax_name() {    
+    $this->auth(array('ajax'=>true, 'user'=>'is_logged_in'));
+    $data['name'] = $this->request->post_var('name');
+    
+    if ($this->is_api()) {
+      $this->ajax_name_api($data);
+    } elseif (! $this->request->is_ajax()) {
+      echo 'Error no ajax';
+    } else {
+      if ($this->request->is_empty($data['name'])) {
+        echo "Name is a required field";
+      } else {
+        echo $data['name'];
+      }
     }
-    
-    $name = $this->request->post_var('name');
-    if ($name === false) {
-      \cx\app\cx_json::error(array('code'=>204, 'message'=>'Name not set'));
-    }
-    
-    \cx\app\cx_json::ok(array('code'=>200, 'name'=>$name));
+
   }
   
   public function get_pwd() {

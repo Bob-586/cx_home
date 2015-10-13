@@ -26,8 +26,10 @@ class cx_loader_app_home extends cx\app\app {
     $this->breadcrumb = 'Main Page';
     
     $id = $this->session->get_int(CX_LOGIN . 'id');
-
-    if ($id === false || $id == 0) {
+/**
+ * @todo add api check / auth
+ */
+    if ($this->request->is_not_valid_id($id)) {
       cx_redirect_url($this->get_url('/app/home', 'login'));
     }
 
@@ -55,10 +57,10 @@ class cx_loader_app_home extends cx\app\app {
     $users = new cx\model\users($db_options);
 
     $cc_name = $users->get_username_from_cookie();
-    $username = ($this->request->request_var('username') !== false) ? $this->request->request_var('username') : $cc_name;
+    $username = ($this->request->is_not_empty($this->request->request_var('username'))) ? $this->request->request_var('username') : $cc_name;
     $password = $this->request->request_var('password');
 
-    if ($username !== false && $password !== false) {
+    if ($this->request->is_not_empty($username) && $this->request->is_not_empty($password)) {
       $success = $users->is_user($username, $password);
 
       if ($success == true) {

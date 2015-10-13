@@ -82,7 +82,7 @@ class users extends the_model {
 
       $username = $this->request->request_var('username');
       // If another user is trying to login, let them...by ignoring the cookie data.
-      if (empty($username) || $username == $this->get_member('username')) {
+      if ($this->request->is_empty($username) || $username == $this->get_member('username')) {
         // Make sure cookie data is same as database, if so log them in.
         
         if ($this->get_member($this->key) > 0 && md5(COOKIE_SALT . $this->get_member('password')) == $c_apwd && md5(COOKIE_SALT . $this->get_member('username')) == $c_ausr) {
