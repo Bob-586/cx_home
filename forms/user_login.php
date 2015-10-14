@@ -29,7 +29,8 @@ $this->form('password', 'password', array('size'=>$size,
 $this->form('start_div', 'pwd_strength', array('div-class'=>'pwstrength_viewport_progress'));
 $this->form('end_div', 'pwd_strength');
 
-$this->form('checkboxes', 'login', array('options'=>array('rememberme'=>'Remember Me')));
+$checked = ($model['pwd'] == "**********") ? true : false;
+$this->form('checkboxes', 'login', array('checked'=>$checked, 'options'=>array('rememberme'=>'Remember Me')));
 
 $this->form('button', 'do_login', array('id' => 'save', 
         'class'=>'btn btn-primary btn-md', 'value' => 'Login <i class=\'fa fa-sign-in\'></i>',
