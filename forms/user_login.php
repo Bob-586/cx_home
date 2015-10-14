@@ -40,7 +40,12 @@ $this->form('end_div', 'offset');
 $this->form('end_div', 'row');
 $this->form('end_div', 'pwdc');
 
+$ready_code = jquery_load("if ($('#login-password').val() == '**********') { \r\n $('.pwstrength_viewport_progress').hide(); \r\n } \r\n");
+
 $this->form('js_inline', 'do_submit', array('code'=>"\r\n
+  
+  {$ready_code}
+
   function login_submit() { \r\n
     var login = $('#login-username').val(); \r\n
     var pwd = $('#login-password').val(); \r\n
