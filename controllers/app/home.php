@@ -69,20 +69,20 @@ class cx_loader_app_home extends cx\app\app {
         cx_set_message('Invalid Username or Password!');
       }
     }
-
+/*
     $this->breadcrumb = array("index.php"=>"Main Page");
     $this->active_crumb = "Log in";
     $this->set_title_and_header('Please login');
-
+*/
     $model['pwd'] = (!empty($cc_name)) ? "**********" : '';
     $model['username'] = $username;
     $frm = $this->load_class('cx\form\form', array('name' => 'login', 'defaults'=>array('readonly'=>false)));
     $frm->grab_form('user_login', $model);
-    $frm->form('submit', 'save', array('id' => 'save', 
-        'class'=>'btn btn-success', 'value' => 'Login',
-        'onclick'=>'return validatePage();'));
     $frm->end_form();
 
+    $this->add_js('./assets/pwd-meter.min.js');  
+    $this->add_css('./assets/login.css');
+    
     $this->do_view($frm->get_html());
   }
 
