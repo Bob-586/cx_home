@@ -52,5 +52,11 @@ $this->form('js_inline', 'do_submit', array('code'=>"
       $('#login-password').css('background-color', 'white');
       $('#login').submit();
     }
-}     
+  }
+
+$(':input').keypress(function (e) {
+  if (e.which == 13) {
+    $('#login').submit(); // Pressing Enter key on input field allows submit
+  }
+});
   "));
