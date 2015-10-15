@@ -13,8 +13,18 @@ $this->form('hidden_field', 'save', array('value'=>'saveme'));
 
 $this->form('start_div', 'pwdc', array('div-id'=>'pwd-container', 'div-class'=>'container'));
 
+$this->form('text', 'fname', array('size'=>$size,
+    'maxlength'=>'47', 'label'=>'Frist Name',
+    'class'=>'form-control input-sm chat-input', 'required'=>true,
+    'placeholder'=>'Enter the First Name'));
+
+$this->form('text', 'lname', array('size'=>$size,
+    'maxlength'=>'47', 'label'=>'Last Name',
+    'class'=>'form-control input-sm chat-input', 'required'=>true,
+    'placeholder'=>'Enter the Last Name'));
+
 $this->form('text', 'username', array('size'=>$size,
-    'maxlength'=>'27', 'label'=>'Username',
+    'maxlength'=>'80', 'label'=>'Username',
     'class'=>'form-control input-sm chat-input', 'required'=>true,
 //    'div-class'=>'small-field-box',
     'placeholder'=>'Enter New Username'));
@@ -24,7 +34,6 @@ $holder = ($model['new'] === true) ? "Enter a Strong Password." : 'Leave blank f
 $this->form('password', 'password', array('size'=>$size,
     'maxlength'=>'27', 'label'=>'Password',
     'class'=>'form-control input-sm chat-input', 'required'=>false,
-//    'div-class'=>'small-field-box',
     'placeholder'=>$holder));
 
 $this->form('start_div', 'pwd_strength', array('div-class'=>'pwstrength_viewport_progress'));
@@ -33,10 +42,9 @@ $this->form('end_div', 'pwd_strength');
 $this->form('password', 'confirm', array('size'=>$size,
     'maxlength'=>'27', 'label'=>'Confirm Password',
     'class'=>'form-control input-sm chat-input', 'required'=>false,
-//    'div-class'=>'small-field-box',
     'placeholder'=>$holder));
 
-$this->form('checkboxes', 'rights', array('options'=>$model['rights_statuses']));
+$this->form('checkboxes', 'rights', array('options'=>$model['rights_statuses'], 'read_only'=>$model['lock_rights_controls']));
 
 $this->form('button', 'do_login', array('id' => 'save', 
         'class'=>'btn btn-primary btn-md', 'value' => 'Save <i class=\'fa fa-floppy-o\'></i>',

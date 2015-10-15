@@ -28,6 +28,11 @@
     RewriteCond "%{REQUEST_FILENAME}" "!-d"
     RewriteCond "%{REQUEST_FILENAME}" "!-l"
     RewriteRule "^(assets|skin|js|css)/(.*)$" "-" [R=404,L,NS]
+# Short Hand Site
+    RewriteCond "%{REQUEST_FILENAME}" "!-f"
+    RewriteCond "%{REQUEST_FILENAME}" "!-d"
+    RewriteCond "%{REQUEST_FILENAME}" "!-l"
+    RewriteRule "^([^/]*)/([^/]*)/$" "index.php?route=/$1/$2&m=index" [QSA,L]
 # rewrite everything not found to index.php
     RewriteCond "%{REQUEST_FILENAME}" "!-f"
     RewriteCond "%{REQUEST_FILENAME}" "!-d"
