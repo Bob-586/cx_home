@@ -24,7 +24,7 @@ class cx_loader_app_users extends cx\app\app {
   public function index() {
     $this->auth(array('user'=>'login_check'));
     $this->datatables_code();
-    $page['q'] = \cx\app\main_functions::get_globals(array('route','m'));
+    $page['q'] = \cx\app\main_functions::get_globals(array('route','m')); // Get pagination vars
     $this->load_view('app/users/index', $page);
   }
 
@@ -111,7 +111,7 @@ class cx_loader_app_users extends cx\app\app {
     $model['rights_statuses'] = array('admin' => 'Administrator', 'staff' => 'Staff', 'cus' => 'Customer', 'api' => 'API client');
 
     if (cx\app\static_request::init('request', 'save')->is_set()) {
-      $edit_user->auto_set_members();
+      $edit_user->auto_set_members(); // Set all post vars to DB
 
       $confirm = cx\app\static_request::init('request', 'confirm');
       $pwd = cx\app\static_request::init('request', 'password');
@@ -120,7 +120,7 @@ class cx_loader_app_users extends cx\app\app {
         cx\app\main_functions::set_message('First/Last name or username is missing.');
         $saveme = false;
       } elseif ($model['new'] === false && $confirm->is_empty() && $pwd->is_empty()) {
-        $edit_user->set_member('password', $s_pwd);
+        $edit_user->set_member('password', $s_pwd); // Keep current password!
         $saveme = true;
       } elseif ($confirm->is_not_empty() &&
         $pwd->to_string() === $confirm->to_string() &&
@@ -128,7 +128,7 @@ class cx_loader_app_users extends cx\app\app {
         $this->load_model('users' . DS . 'users');
         $db_options = array('api' => false);
         $users = new cx\model\users($db_options);
-        $edit_user->set_member('password', $users->get_pwd_hash($pwd->to_string()));
+        $edit_user->set_member('password', $users->get_pwd_hash($pwd->to_string())); // Assign new pwd
         $saveme = true;
       } else {
         cx\app\main_functions::set_message('Password not strong/does not match.');
