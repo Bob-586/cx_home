@@ -115,7 +115,10 @@ class cx_loader_app_users extends cx\app\app {
       $confirm = cx\app\static_request::init('request', 'confirm');
       $pwd = cx\app\static_request::init('request', 'password');
 
-      if ($model['new'] === false && $confirm->is_empty() && $pwd->is_empty()) {
+      if (cx\app\static_request::init('request', 'username')->is_empty() || cx\app\static_request::init('request', 'fname')->is_empty()  || cx\app\static_request::init('request', 'lname')->is_empty()) {
+        cx\app\main_functions::set_message('First/Last name or username is missing.');
+        $saveme = false;
+      } elseif ($model['new'] === false && $confirm->is_empty() && $pwd->is_empty()) {
         $edit_user->set_member('password', $s_pwd);
         $saveme = true;
       } elseif ($confirm->is_not_empty() &&

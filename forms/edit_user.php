@@ -56,12 +56,18 @@ $condition = ($model['new'] === true) ? 'pwd.length > 6' : '(pwd.length == 0 || 
 
 $this->form('js_inline', 'do_submit', array('code'=>"
   function save_user() { 
+    var fname = $('#edit_user-fname').val();
+    var lname = $('#edit_user-lname').val();
     var login = $('#edit_user-username').val(); 
     var pwd = $('#edit_user-password').val(); 
     var confirm = $('#edit_user-confirm').val(); 
     if ({$condition} && pwd == confirm) { 
       if (login.length > 2) { 
-        $('#edit_user').submit(); 
+        if (fname.length > 1 && lname.length > 1) {
+          $('#edit_user').submit(); 
+        } else {
+          alert('Enter a first/last name!');
+        }
       } else { 
         alert('Enter a valid username!'); 
       } 
