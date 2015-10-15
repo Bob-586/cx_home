@@ -45,7 +45,7 @@ class cx_loader_app_home extends cx\app\app {
   }
   
   public function make_form() {
-    $this->login_check();
+    $this->auth(array('user'=>'admin_check'));
     
     if ($this->request->get_var('table') !== false) {
       $this->load_model('auto_form_generator');

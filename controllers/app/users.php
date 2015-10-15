@@ -22,6 +22,7 @@ class cx_loader_app_users extends cx\app\app {
   }
 
   public function index() {
+    $this->auth(array('user'=>'login_check'));
     $this->datatables_code();
     $page['q'] = \cx\app\main_functions::get_globals(array('route','m'));
     $this->load_view('app/users/index', $page);
