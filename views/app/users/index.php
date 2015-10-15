@@ -35,7 +35,7 @@
 $( document ).ready(function() {
 	var oldStart = 0;
    	$('#UserList').dataTable({				
-			"order": [[ 1, "desc" ]],
+			"order": [[ 2, "desc" ]],
 			"iDisplayLength": 25,
 			"processing": true,
         "serverSide": true,
