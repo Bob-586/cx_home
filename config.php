@@ -3,6 +3,9 @@ define('DS', DIRECTORY_SEPARATOR);
 define('PROJECT_BASE_DIR', dirname(__FILE__) . DS);
 define('DEFAULT_PROJECT', 'home'); // default app controller to use
 define("CX_SHORT_URL", "true"); // Is apache rewrite mod on?
+
+define("COPYRIGHT", "Robert Strutts");
+
 // set session name for homepage site
 define("CX_SES","HOME_SYS_");
 
@@ -20,6 +23,7 @@ define("CX_DB_USER_LOCAL","home");
 define("CX_DB_PASS_LOCAL","MYPASSWORD_CHANGE-ME");
 define("CX_DB_PORT_LOCAL","3306");
 define("CX_DB_NAME_LOCAL","home");
+
 define("CX_DB_HOST_REMOTE","GODADDY.com....");
 define("CX_DB_USER_REMOTE","home");
 define("CX_DB_PASS_REMOTE","SECRETPASSWORD");

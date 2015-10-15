@@ -1,0 +1,64 @@
+<?php 
+
+/**
+ * @copyright (c) 2012
+ * @author Robert Strutts
+ */
+
+$size = (isset($this->defaults['size']) ? $this->defaults['size'] : '20');
+$rows = (isset($this->defaults['rows']) ? $this->defaults['rows'] : '16');
+$cols = (isset($this->defaults['cols']) ? $this->defaults['cols'] : '80');
+
+$this->form('hidden_field', 'save', array('value'=>'saveme'));
+
+$this->form('start_div', 'pwdc', array('div-id'=>'pwd-container', 'div-class'=>'container'));
+
+$this->form('text', 'username', array('size'=>$size,
+    'maxlength'=>'27', 'label'=>'Username',
+    'class'=>'form-control input-sm chat-input', 'required'=>true,
+//    'div-class'=>'small-field-box',
+    'placeholder'=>'Enter New Username'));
+
+$holder = ($model['new'] === true) ? "Enter a Strong Password." : 'Leave blank for current password.';
+
+$this->form('password', 'password', array('size'=>$size,
+    'maxlength'=>'27', 'label'=>'Password',
+    'class'=>'form-control input-sm chat-input', 'required'=>false,
+//    'div-class'=>'small-field-box',
+    'placeholder'=>$holder));
+
+$this->form('start_div', 'pwd_strength', array('div-class'=>'pwstrength_viewport_progress'));
+$this->form('end_div', 'pwd_strength');
+
+$this->form('password', 'confirm', array('size'=>$size,
+    'maxlength'=>'27', 'label'=>'Confirm Password',
+    'class'=>'form-control input-sm chat-input', 'required'=>false,
+//    'div-class'=>'small-field-box',
+    'placeholder'=>$holder));
+
+$this->form('checkboxes', 'rights', array('options'=>$model['rights_statuses']));
+
+$this->form('button', 'do_login', array('id' => 'save', 
+        'class'=>'btn btn-primary btn-md', 'value' => 'Save <i class=\'fa fa-floppy-o\'></i>',
+        'onclick'=>'save_user();'));
+    
+$this->form('end_div', 'pwdc');
+
+$condition = ($model['new'] === true) ? 'pwd.length > 6' : '(pwd.length == 0 || pwd.length >6)';
+
+$this->form('js_inline', 'do_submit', array('code'=>"
+  function save_user() { 
+    var login = $('#edit_user-username').val(); 
+    var pwd = $('#edit_user-password').val(); 
+    var confirm = $('#edit_user-confirm').val(); 
+    if ({$condition} && pwd == confirm) { 
+      if (login.length > 2) { 
+        $('#edit_user').submit(); 
+      } else { 
+        alert('Enter a valid username!'); 
+      } 
+    } else { 
+      alert('Passwords must be complex and match!');
+    } 
+}     
+  "));

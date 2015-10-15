@@ -26,9 +26,6 @@ $this->form('password', 'password', array('size'=>$size,
     'value'=>$model['pwd'],
     'placeholder'=>''));
 
-$this->form('start_div', 'pwd_strength', array('div-class'=>'pwstrength_viewport_progress'));
-$this->form('end_div', 'pwd_strength');
-
 $checked = ($model['pwd'] == "**********") ? true : false;
 $this->form('checkboxes', 'login', array('checked'=>$checked, 'options'=>array('rememberme'=>'Remember Me')));
 
@@ -40,17 +37,20 @@ $this->form('end_div', 'offset');
 $this->form('end_div', 'row');
 $this->form('end_div', 'pwdc');
 
-$ready_code = jquery_load("if ($('#login-password').val() == '**********') { \r\n $('.pwstrength_viewport_progress').hide(); \r\n } \r\n");
-
-$this->form('js_inline', 'do_submit', array('code'=>"\r\n
-  
-  {$ready_code}
-
-  function login_submit() { \r\n
-    var login = $('#login-username').val(); \r\n
-    var pwd = $('#login-password').val(); \r\n
-    if (login.length > 2 && pwd.length > 2) { \r\n
+$this->form('js_inline', 'do_submit', array('code'=>"
+  function login_submit() { 
+    var login = $('#login-username').val();
+    var pwd = $('#login-password').val(); 
+    if (login.length < 3) {
+      $('#login-password').css('background-color', 'white');
+      $('#login-username').css('background-color', 'red');
+    } else if (pwd.length < 3) {
+      $('#login-username').css('background-color', 'white');
+      $('#login-password').css('background-color', 'red');
+    } else {
+      $('#login-username').css('background-color', 'white');
+      $('#login-password').css('background-color', 'white');
       $('#login').submit();
-    } \r\n
-} \r\n    
+    }
+}     
   "));

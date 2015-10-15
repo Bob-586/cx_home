@@ -2,8 +2,10 @@
 class cx_loader_app_home extends cx\app\app {
 
   public function __construct() {
-    $this->set_footer("&copy; Copyright 2014-" . date('Y') . ". The Bishop's.");
-    parent::__construct();
+    $copy = (defined('COPYRIGHT')) ? COPYRIGHT : '';
+    $this->set_footer("&copy; Copyright 2014-" . date('Y') . ' ' . $copy);
+
+    parent::__construct(); // Must load app constructor
   }
   
   public function deny() {
@@ -12,7 +14,7 @@ class cx_loader_app_home extends cx\app\app {
   }
   
   public function index() {
-    $this->breadcrumb = array("javascript:;"=>"Main");
+    $this->breadcrumb = array("javascript:;"=>"Home");
     $this->active_crumb = "Index";
 
     $this->set_title_and_header('Hello,');
@@ -23,7 +25,9 @@ class cx_loader_app_home extends cx\app\app {
   
   public function main() {
     $this->set_title_and_header('Main Page');
-    $this->breadcrumb = 'Main Page';
+    $index = $this->get_url('app/home', 'index');
+    $this->breadcrumb = array($index=>"Index");
+    $this->active_crumb = "Main";
     
     $id = $this->session->get_int(CX_LOGIN . 'id');
 /**
@@ -35,7 +39,8 @@ class cx_loader_app_home extends cx\app\app {
 
     $page['fname'] = $this->session->session_var(CX_LOGIN . 'fname');
     $page['lname'] = $this->session->session_var(CX_LOGIN . 'lname');
-    $page['rights'] = $this->session->session_var(CX_LOGIN . 'rights');
+    $rights = $this->session->session_var(CX_LOGIN . 'rights');
+    $page['rights'] = (cx\app\main_functions::is_serialized($rights) === true) ? cx\app\main_functions::safe_unserialize($rights) : $rights;
     $this->load_view('app' . DS . 'main', $page);  
   }
   
@@ -69,20 +74,12 @@ class cx_loader_app_home extends cx\app\app {
         cx_set_message('Invalid Username or Password!');
       }
     }
-/*
-    $this->breadcrumb = array("index.php"=>"Main Page");
-    $this->active_crumb = "Log in";
-    $this->set_title_and_header('Please login');
-*/
     $model['pwd'] = (!empty($cc_name)) ? "**********" : '';
     $model['username'] = $username;
     $frm = $this->load_class('cx\form\form', array('name' => 'login', 'defaults'=>array('readonly'=>false)));
     $frm->grab_form('user_login', $model);
     $frm->end_form();
 
-    $this->add_js('./assets/pwd-meter.min.js');  
-    $this->add_css('./assets/login.css');
-    
     $this->do_view($frm->get_html());
   }
 
@@ -107,6 +104,82 @@ class cx_loader_app_home extends cx\app\app {
     session_destroy();
     header('Location: '. $this->get_url('/app/home', 'index'));  
   } 
+  
+  public function edit_user() {
+    $id = cx\app\static_request::init('get', 'id');
+    
+    if ($id->is_not_set()) {
+      echo "Invalid id!";
+      exit;
+    }
+    
+    if ($id->to_int() !== $this->session->get_int(CX_LOGIN . 'id')) {
+      $this->auth_admin_check();
+    }
+    
+    $this->load_model();
+    $db_options = array('table'=>'users', 'key'=>'id');
+    $edit_user = new cx\database\model($db_options);
+    
+    if ($id->is_not_valid_id()) {
+      // no existing data
+      $model = array(); 
+      $model['new'] = true; 
+    } else {
+      $edit_user->load($id->to_int());
+      $model = $edit_user->get_members();
+      if ($model == array()) {
+        echo "Invalid id!";
+        exit;
+      }
+      $s_pwd = $model['password']; // Save Pwd
+      unset($model['password']);
+      $model['new'] = false;
+    }      
+
+    $model['rights_statuses'] = array('admin'=>'Administrator', 'user'=>'User', 'api'=>'API client');
+    
+    if (cx\app\static_request::init('request', 'save')->is_set()) {
+      $edit_user->auto_set_members();
+      
+      $confirm = cx\app\static_request::init('request', 'confirm');
+      $pwd = cx\app\static_request::init('request', 'password');
+     
+      if ($model['new'] === false && $confirm->is_empty() && $pwd->is_empty()) {
+        $edit_user->set_member('password', $s_pwd);
+        $saveme = true;
+      } elseif ($confirm->is_not_empty() && 
+            $pwd->to_string() === $confirm->to_string() && 
+            strlen($pwd->to_string()) > 6) {
+        $this->load_model('users' . DS . 'users');
+        $db_options = array('api'=>false);
+        $users = new cx\model\users($db_options);
+        $edit_user->set_member('password', $users->get_pwd_hash($pwd->to_string()));
+        $saveme = true;
+      } else {
+        cx\app\main_functions::set_message('Password not strong/does not match.');
+        $saveme = false;
+      }
+      
+      if ($saveme === true) {
+        $success = $edit_user->save();
+
+        $id = $edit_user->get_member('id');
+        if ($success===true && $id > 0) {
+          cx_redirect_url($this->get_url('/app/home', 'edit_user', 'id='.$id));
+        }
+      }
+    }   
+
+    $frm = $this->load_class('cx\form\form', array('name' => 'edit_user', 'defaults'=>array('readonly'=>false)));
+    $frm->grab_form('edit_user', $model);
+    $frm->end_form();
+
+    $this->add_js('./assets/pwd-meter.min.js');  
+    $this->add_css('./assets/login.css');
+    
+    $this->do_view($frm->get_html());
+  }
   
   public function error() {
     $this->do_view('', 'error');    

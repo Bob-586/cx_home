@@ -28,7 +28,8 @@
 class cx_loader_app_testing extends cx\app\app {
 
   public function __construct() {
-    $this->set_footer("&copy; Copyright 2014-" . date('Y') . ". The Bishop's");
+    $copy = (defined('COPYRIGHT')) ? COPYRIGHT : '';
+    $this->set_footer("&copy; Copyright 2014-" . date('Y') . ' ' . $copy);
     parent::__construct();
   }
   
@@ -193,13 +194,15 @@ public function top() {
     }
 
   }
-  
+
+/*  
   public function get_pwd() {
     $this->load_model('users' . DS . 'users');
     $db_options = array();
     $users = new cx\model\users($db_options);
     echo $users->get_pwd_hash($this->request->get_var('pwd'));
   }  
+*/
   
   public function sleep() {
     sleep(5);
