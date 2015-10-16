@@ -44,7 +44,7 @@ class cx_loader_app_home extends cx\app\app {
     $this->set_title_and_header('Hello,');
     
     $this->do_view('Welcome...this is the main controller: /app/home<br><br>'
-      . '<a href="' . $this->get_url("/app" . DEFAULT_PROJECT, "login") . '">Login</a><br><br>');
+      . '<a href="' . $this->get_url("/app/" . DEFAULT_PROJECT, "login") . '">Login</a><br><br>');
   }
   
   public function main() {
