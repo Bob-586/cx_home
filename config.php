@@ -42,6 +42,8 @@ if (!defined("CX_ROBOTS")) {
   define('CX_ROBOTS', 'INDEX, FOLLOW, ARCHIVE');
 }
 
+define('MY_TIME_ZONE', 'America/Detroit'); // For LOGGING purposes
+
 /*
  * Do NOT changes the lines of code below this line HERE: !!
  * ----------------------------------------------------------------------------
