@@ -5,7 +5,7 @@
  * @author Chris Allen, Robert Strutts
  */
 
-echo "<a href=\"" . $this->get_url("/app/home", "logout") . "\">Logout</a><br><br>";
+echo "<a href=\"" . $this->get_url("/app/". DEFAULT_PROJECT, "logout") . "\">Logout</a><br><br>";
 
 echo "Welcome back, {$fname} {$lname}<br><br>";
 echo "Rights = "; 

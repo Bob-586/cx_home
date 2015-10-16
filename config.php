@@ -1,6 +1,4 @@
 <?php
-define('DS', DIRECTORY_SEPARATOR);
-define('PROJECT_BASE_DIR', dirname(__FILE__) . DS);
 define('DEFAULT_PROJECT', 'home'); // default app controller to use
 define("CX_SHORT_URL", "true"); // Is apache rewrite mod on?
 
@@ -40,15 +38,17 @@ if (!defined("CX_DESCRIPTION")) {
 $live_ips = array('192.168.10.121'); // My PC's IP to bind to LIVE mode.
 // dev or localhost is developer mode.
 
+if (!defined("CX_ROBOTS")) {
+  define('CX_ROBOTS', 'INDEX, FOLLOW, ARCHIVE');
+}
+
 /*
  * Do NOT changes the lines of code below this line HERE: !!
  * ----------------------------------------------------------------------------
  * =========================Hands OFF!!========================================
  */
-
-if (!defined("CX_ROBOTS")) {
-  define('CX_ROBOTS', 'INDEX, FOLLOW, ARCHIVE');
-}
+define('DS', DIRECTORY_SEPARATOR);
+define('PROJECT_BASE_DIR', dirname(__FILE__) . DS);
 
 // Used by login_functions, don't change once live!!
 define("CX_PWD_SALT1","@*15dW4&");

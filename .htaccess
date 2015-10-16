@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
     Options +FollowSymLinks -Indexes
     RewriteEngine On
-# DENY ACCESS TO CORE DIRs
-    RewriteRule "^(models|views|controllers|includes|forms|templates|sql)/(.*)$" "index.php?route=/app/home&m=deny" [NC,L]
+# LOG AND DENY ACCESS TO CORE DIRs
+    RewriteRule "^(models|views|controllers|includes|forms|templates|sql)/(.*)$" "index.php?route=/app/home&m=deny&f=$1/$2" [NC,L]
 # TRACE and TRACK HTTP methods disabled to prevent XSS attacks
     RewriteCond "%{REQUEST_METHOD}" "^TRAC[EK]"
     RewriteRule ".*" "-" [L,R=405]

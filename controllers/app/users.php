@@ -25,7 +25,7 @@ class cx_loader_app_users extends cx\app\app {
     $this->auth(array('user'=>'login_check'));
     $this->datatables_code();
     $page['q'] = \cx\app\main_functions::get_globals(array('route','m')); // Get pagination vars
-    $this->load_view('app/users/index', $page);
+    $this->load_view('app'. DS .'users'. DS .'index', $page);
   }
 
   public function ajax_ssp_users_list() {
@@ -103,7 +103,7 @@ class cx_loader_app_users extends cx\app\app {
         exit;
       }
       $s_pwd = $model['password']; // Save Pwd
-      unset($model['password']);
+      unset($model['password']); // Remove scrambled DB password, so user does not see it!
       $model['new'] = false;
     }
 
@@ -146,7 +146,7 @@ class cx_loader_app_users extends cx\app\app {
     }
 
     $frm = $this->load_class('cx\form\form', array('name' => 'edit_user', 'defaults' => array('readonly' => false)));
-    $frm->grab_form('edit_user', $model);
+    $frm->grab_form('app'. DS .'users'. DS .'edit_user', $model);
     $frm->end_form();
 
     $this->add_js('./assets/pwd-meter.min.js');
