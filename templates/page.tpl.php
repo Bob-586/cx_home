@@ -53,8 +53,10 @@ $scripts = $this->registry->get('document')->get_scripts();
           
     <?php foreach ($styles as $style) { ?>
       <link href="<?php echo $style['href']; ?>" type="text/css" rel="<?php echo $style['rel']; ?>" media="<?php echo $style['media']; ?>" />
-    <?php } ?>
-      
+    <?php } ?>  
+  </head>
+   
+  <body id="my-page">
     <?php 
       echo $this->main_scripts; 
       echo $this->scripts; 
@@ -62,10 +64,7 @@ $scripts = $this->registry->get('document')->get_scripts();
     <?php foreach ($scripts as $script) { ?>
       <script src="<?php echo $script; ?>" type="text/javascript"></script>
     <?php } ?>
-  
-  </head>
-   
-  <body id="my-page">
+      
     <div id="wrap">
         <div id="autosavemessage"></div>
         
