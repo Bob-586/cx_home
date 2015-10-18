@@ -63,7 +63,12 @@ $scripts = $this->registry->get('document')->get_scripts();
     ?>  
     <?php foreach ($scripts as $script) { ?>
       <script src="<?php echo $script; ?>" type="text/javascript"></script>
-    <?php } ?>
+    <?php 
+    }
+     
+    echo $this->js_onready;
+    ?>
+
       
     <div id="wrap">
         <div id="autosavemessage"></div>
