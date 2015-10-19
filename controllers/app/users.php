@@ -110,25 +110,23 @@ class cx_loader_app_users extends cx\app\app {
     $model['lock_rights_controls'] = $lock_rights_controls;
     $model['rights_statuses'] = array('admin' => 'Administrator', 'staff' => 'Staff', 'cus' => 'Customer', 'api' => 'API client');
 
-    if (cx\app\static_request::init('request', 'save')->is_set()) {
+    if (cx\app\static_request::init('post', 'save')->is_set()) {
       $edit_user->auto_set_members(); // Set all post vars to DB
 
-      $confirm = cx\app\static_request::init('request', 'confirm');
-      $pwd = cx\app\static_request::init('request', 'password');
+      $confirm = $this->request->post_var('confirm');
+      $pwd = $this->request->post_var('password');
 
-      if (cx\app\static_request::init('request', 'username')->is_empty() || cx\app\static_request::init('request', 'fname')->is_empty()  || cx\app\static_request::init('request', 'lname')->is_empty()) {
+      if (cx\app\static_request::init('post', 'username')->is_empty() || cx\app\static_request::init('post', 'fname')->is_empty()  || cx\app\static_request::init('post', 'lname')->is_empty()) {
         cx\app\main_functions::set_message('First/Last name or username is missing.');
         $saveme = false;
-      } elseif ($model['new'] === false && $confirm->is_empty() && $pwd->is_empty()) {
+      } elseif ($model['new'] === false && $this->request->is_empty($confirm) && $this->request->is_empty($pwd)) {
         $edit_user->set_member('password', $s_pwd); // Keep current password!
         $saveme = true;
-      } elseif ($confirm->is_not_empty() &&
-        $pwd->to_string() === $confirm->to_string() &&
-        strlen($pwd->to_string()) > 6) {
+      } elseif ($this->request->is_not_empty($confirm) && $pwd === $confirm && strlen($pwd) > 6) {
         $this->load_model('users' . DS . 'users');
         $db_options = array('api' => false);
         $users = new cx\model\users($db_options);
-        $edit_user->set_member('password', $users->get_pwd_hash($pwd->to_string())); // Assign new pwd
+        $edit_user->set_member('password', $users->get_pwd_hash($pwd)); // Assign new pwd
         $saveme = true;
       } else {
         cx\app\main_functions::set_message('Password not strong/does not match.');
