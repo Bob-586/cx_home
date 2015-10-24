@@ -67,6 +67,23 @@ class cx_loader_app_home extends cx\app\app {
     $page['rights'] = (cx\app\main_functions::is_serialized($rights) === true) ? cx\app\main_functions::safe_unserialize($rights) : $rights;
     $this->load_view('app' . DS . 'main', $page);  
   }
+  public function build_template() {
+    $this->auth(array('user'=>'admin_check'));
+    
+    $folder_name = $this->request->get_var('folder_name');
+    $folder_name = preg_replace("/[^a-zA-Z0-9_]+/", "", $folder_name);
+
+    $file_name = $this->request->get_var('file_name');
+    $file_name = preg_replace("/[^a-zA-Z0-9_]+/", "", $file_name);
+
+    if ($this->request->is_not_empty($folder_name) && $this->request->is_not_empty($file_name)) {
+      $this->load_model('auto_form_generator');
+      $form_gen = new cx\model\auto_template_generator($this->request->get_var('table'));
+      $form_gen->generator($folder_name, $file_name , '');
+    } else {
+      echo 'Sorry, please enter folder/file name varible!';
+    }
+  }
   
   public function make_form() {
     $this->auth(array('user'=>'admin_check'));

@@ -19,7 +19,7 @@ class auto_form_generator extends the_model {
   }
 
   public function generator() {
-    $myFile = CX_BASE_DIR . 'forms' . DS . str_replace('..', '', $this->table) . "_new.php";
+    $myFile = PROJECT_BASE_DIR . 'forms' . DS . str_replace('..', '', $this->table) . "_new.php";
     //if (file_exists($myFile)) die('File already exists. Please delete it.');
     $fh = fopen($myFile, 'w') or die("can't open file");
     fwrite($fh, "<?php \r\n\r\n");
